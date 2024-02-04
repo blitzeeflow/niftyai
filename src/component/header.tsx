@@ -24,6 +24,7 @@ export const Header = () => {
         <Nav className="me-auto" navbar>
           <NavItem>
             <NavLink href="/summarise/">Summarise</NavLink>
+            <NavLink href="/chat/">Chat</NavLink>
           </NavItem>
           <NavItem>
             <NavLink href="https://github.com/reactstrap/reactstrap">

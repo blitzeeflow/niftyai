@@ -11,7 +11,6 @@ export interface ModalLoadingProps {
 }
 export const ModelLoading = (props: ModalLoadingProps) => {
   const { isOpen, progress } = props;
-  console.log(progress);
   return (
     <>
       <Modal isOpen={isOpen}>

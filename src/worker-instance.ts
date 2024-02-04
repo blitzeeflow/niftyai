@@ -1,6 +1,7 @@
 let progress: number = 0;
 let status: string = "progress";
-// Initialise worker, import.meta.url
+const callbacks: ((result: any) => void)[] = [];
+
 export const worker = new Worker(new URL("./worker.ts", import.meta.url), {
   type: "module",
 });
@@ -15,6 +16,10 @@ export function generate(type: string, data: any) {
   );
 }
 
+export function resultCallback(callback: (result: any) => void) {
+  callbacks.push(callback);
+}
+
 export function getStatus() {
   return status;
 }
@@ -25,7 +30,7 @@ export function getProgress() {
 
 worker.addEventListener("message", (event) => {
   const message = event.data;
-  console.log(message);
+  // console.log(message);
   switch (message.type) {
     case "download":
       status = message.data.status;
@@ -36,6 +41,13 @@ worker.addEventListener("message", (event) => {
       }
       break;
     case "update":
+      // console.log(message);
+      break;
+    case "result":
+      if (callbacks.length) {
+        console.log(callbacks.length);
+        callbacks.forEach((item) => item(message));
+      }
       console.log(message);
       break;
   }

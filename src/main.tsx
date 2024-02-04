@@ -8,6 +8,7 @@ import { Row, Col, Container } from "reactstrap";
 import { Header } from "./component/header.tsx";
 import { SummarisePage } from "./page/summarise.tsx";
 import "./worker-instance.ts";
+import { ChatPage } from "./page/chat.tsx";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "summarise",
     element: <SummarisePage />,
+  },
+  {
+    path: "chat",
+    element: <ChatPage />,
   },
 ]);
 

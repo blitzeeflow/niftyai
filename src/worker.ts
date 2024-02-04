@@ -1,12 +1,16 @@
-import { summarizationModelInstance } from "./ai/model-instances";
+import {
+  chatModelInstance,
+  summarizationModelInstance,
+} from "./ai/model-instances";
 import { ModelTransformer } from "./ai/pipeline";
 
 let pipelines: { [key: string]: any } = {};
 console.log("here");
-type ModelType = "summarise";
+type ModelType = "summarise" | "chat";
 
 const taskMap: { [key in ModelType]: ModelTransformer } = {
   summarise: summarizationModelInstance,
+  chat: chatModelInstance,
 };
 async function runModel(type: ModelType, modelData: any) {
   const model = taskMap[type];
@@ -20,7 +24,15 @@ async function runModel(type: ModelType, modelData: any) {
 }
 async function generate(type: string, data: any) {
   const fn = pipelines[type];
-  return await fn(data.text, {
+  let prompt = data.text;
+  // if (type === "chat") {
+  //   prompt = fn.tokenizer.apply_chat_template(data.messages, {
+  //     tokenize: false,
+  //     add_generation_prompt: true,
+  //   });
+  // }
+  console.log(prompt);
+  return await fn(prompt, {
     ...data.generation,
     callback_function: function (beams: any) {
       const decodedText = fn.tokenizer.decode(beams[0].output_token_ids, {
@@ -46,7 +58,7 @@ self.addEventListener("message", async (event) => {
         break;
       case "generate":
         const result = await generate(eventData.data.type, eventData.data);
-        self.postMessage(result);
+        self.postMessage({ type: "result", data: result });
         break;
       case "update":
         break;

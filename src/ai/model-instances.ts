@@ -5,6 +5,11 @@ export const summarizationModelInstance = new ModelTransformer({
   model: "Xenova/distilbart-cnn-6-6",
 });
 
+export const chatModelInstance = new ModelTransformer({
+  task: "text-generation",
+  model: "Xenova/LaMini-GPT-774M",
+});
+
 // class AutomaticSpeechRecognitionPipeline extends Pipeline {
 //     static task = 'automatic-speech-recognition';
 //     static model = 'Xenova/whisper-tiny.en';

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { ModelLoading } from "../component/model-loading";
 import {
   loadModel,
@@ -8,23 +8,36 @@ import {
   resultCallback,
 } from "../worker-instance";
 import { Button, Col, Container, Input, Label, Row, Spinner } from "reactstrap";
-export const SummarisePage = () => {
+
+export const ChatPage = () => {
   const textareaRef = useRef(null);
-  const resultRef = useRef(null);
+  const resultRef = useRef<any>([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [progress, setProgress] = useState<number>(0);
   const [maxLength, setMaxLength] = useState<number>(150);
   const [generatedText, setGeneratedText] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
-
-  function onResult(result: any) {
-    setGeneratedText(result.data[0].summary_text);
-    setIsGenerating(false);
-  }
+  let started = false;
 
   useEffect(() => {
+    if (started) return;
+    started = true;
+    console.log("here");
+    const onResult = (result: any) => {
+      console.log(result.data[0], resultRef.current);
+      resultRef.current = [
+        ...resultRef.current,
+        {
+          role: "assistant",
+          content: result.data[0].generated_text,
+        },
+      ];
+      setIsGenerating(false);
+    };
+
     const data = {
-      type: "summarise",
+      type: "chat",
     };
     resultCallback(onResult);
     loadModel(data);
@@ -48,14 +61,27 @@ export const SummarisePage = () => {
   function generateText() {
     setIsGenerating(true);
     const text = (textareaRef.current as any)?.value || "";
-    generate("summarise", {
+    resultRef.current = [
+      ...resultRef.current,
+      {
+        role: "user",
+        content: text,
+      },
+    ];
+    setMessages([
+      ...messages,
+      {
+        role: "user",
+        content: text,
+      },
+    ]);
+    generate("chat", {
       text,
       generation: {
         max_new_tokens: getMaxTokens(),
-        num_beams: 2,
-        temperature: 0.3,
-        top_k: 0,
-        do_sample: false,
+        temperature: 0.7,
+        do_sample: true,
+        top_k: 50,
       },
     });
   }
@@ -64,17 +90,29 @@ export const SummarisePage = () => {
       <Container>
         <Row>
           <Col>
-            <h1>Summarise</h1>
+            <h1>Chat</h1>
           </Col>
         </Row>
         <Row>
           <Col>
-            <textarea placeholder="add text here" ref={textareaRef}></textarea>
-          </Col>
-          <Col>
-            <div className="result-container" ref={resultRef}>
-              {generatedText}
+            <div className="result-container">
+              {resultRef.current.map((item: any, index: number) => {
+                return (
+                  <div key={index} className={`${item.role}-message`}>
+                    {item.content}
+                  </div>
+                );
+              })}
             </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <textarea
+              className="user-input"
+              placeholder="add text here"
+              ref={textareaRef}
+            ></textarea>
           </Col>
         </Row>
         <Row>
