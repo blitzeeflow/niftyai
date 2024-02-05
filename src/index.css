@@ -5,15 +5,60 @@ textarea {
   width: 100%;
   min-height: 300px;
   padding: 10px;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
 }
 textarea.user-input {
   height: 100px;
   min-height: 100px;
 }
+.summarise-container {
+  padding: 10px;
+}
 .result-container {
   width: 100%;
   min-height: 300px;
+  max-height: 500px;
+  overflow-y: auto;
   border: 1px solid #999999;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  background: rgb(244, 249, 253);
+  background: linear-gradient(
+    180deg,
+    rgba(244, 249, 253, 1) 0%,
+    rgba(252, 246, 252, 1) 100%
+  );
+}
+.chat-container {
+  background: rgb(244, 249, 253);
+  background: linear-gradient(
+    180deg,
+    rgba(244, 249, 253, 1) 0%,
+    rgba(252, 246, 252, 1) 100%
+  );
+  display: flex;
+  flex-direction: column;
+}
+.flex {
+  display: flex;
+  flex-direction: column;
+}
+.generate-button {
+  align-self: flex-end;
+}
+.chat-message {
+  display: inline-block;
+  padding: 10px;
+  margin: 10px;
+  border-radius: var(--bs-border-radius);
+}
+.user-message {
+  background: white;
+}
+.assistant-message {
+  background: #4c7dfe;
+  color: white;
 }
 .row {
   margin-bottom: 10px;

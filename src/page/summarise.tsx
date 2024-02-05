@@ -72,7 +72,10 @@ export const SummarisePage = () => {
             <textarea placeholder="add text here" ref={textareaRef}></textarea>
           </Col>
           <Col>
-            <div className="result-container" ref={resultRef}>
+            <div
+              className="result-container summarise-container"
+              ref={resultRef}
+            >
               {generatedText}
             </div>
           </Col>
@@ -87,11 +90,17 @@ export const SummarisePage = () => {
               onInput={(event: any) => setMaxLength(Number(event.target.value))}
             ></Input>
           </Col>
-          <Col>
+          <Col className="flex">
             {isGenerating ? (
-              <Spinner />
+              <Spinner className="generate-spinner" />
             ) : (
-              <Button onClick={() => generateText()}>Generate</Button>
+              <Button
+                color="primary"
+                className="generate-button"
+                onClick={() => generateText()}
+              >
+                Generate
+              </Button>
             )}
           </Col>
         </Row>

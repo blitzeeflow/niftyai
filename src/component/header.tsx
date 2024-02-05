@@ -17,19 +17,16 @@ export const Header = () => {
 
   const toggle = () => setIsOpen(!isOpen);
   return (
-    <Navbar>
+    <Navbar color="warning">
       <NavbarBrand href="/">Nifty AI</NavbarBrand>
       <NavbarToggler onClick={toggle} />
       <Collapse isOpen={isOpen} navbar>
         <Nav className="me-auto" navbar>
           <NavItem>
             <NavLink href="/summarise/">Summarise</NavLink>
-            <NavLink href="/chat/">Chat</NavLink>
           </NavItem>
           <NavItem>
-            <NavLink href="https://github.com/reactstrap/reactstrap">
-              GitHub
-            </NavLink>
+            <NavLink href="/chat/">Chat</NavLink>
           </NavItem>
         </Nav>
       </Collapse>

@@ -95,10 +95,13 @@ export const ChatPage = () => {
         </Row>
         <Row>
           <Col>
-            <div className="result-container">
+            <div className="result-container chat-container ">
               {resultRef.current.map((item: any, index: number) => {
                 return (
-                  <div key={index} className={`${item.role}-message`}>
+                  <div
+                    key={index}
+                    className={`chat-message ${item.role}-message`}
+                  >
                     {item.content}
                   </div>
                 );
@@ -125,11 +128,17 @@ export const ChatPage = () => {
               onInput={(event: any) => setMaxLength(Number(event.target.value))}
             ></Input>
           </Col>
-          <Col>
+          <Col className="flex">
             {isGenerating ? (
-              <Spinner />
+              <Spinner className="generate-spinner" />
             ) : (
-              <Button onClick={() => generateText()}>Generate</Button>
+              <Button
+                className="generate-button"
+                color="primary"
+                onClick={() => generateText()}
+              >
+                Send
+              </Button>
             )}
           </Col>
         </Row>
