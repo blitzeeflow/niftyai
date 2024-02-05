@@ -1,18 +1,5 @@
-import { useState } from "react";
-
 import "./App.css";
-import {
-  Row,
-  Col,
-  Navbar,
-  NavbarBrand,
-  Container,
-  Collapse,
-  Nav,
-  NavItem,
-  NavLink,
-  NavbarToggler,
-} from "reactstrap";
+import { Row, Col, Container } from "reactstrap";
 
 function App() {
   return (

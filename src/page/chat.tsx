@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ModelLoading } from "../component/model-loading";
 import {
   loadModel,
@@ -15,7 +15,7 @@ export const ChatPage = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [progress, setProgress] = useState<number>(0);
   const [maxLength, setMaxLength] = useState<number>(150);
-  const [generatedText, setGeneratedText] = useState<string>("");
+  // const [generatedText, setGeneratedText] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   let started = false;

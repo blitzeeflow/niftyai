@@ -12,7 +12,7 @@ const taskMap: { [key in ModelType]: ModelTransformer } = {
   summarise: summarizationModelInstance,
   chat: chatModelInstance,
 };
-async function runModel(type: ModelType, modelData: any) {
+async function runModel(type: ModelType, _modelData: any) {
   const model = taskMap[type];
   pipelines[type] = await model.getInstance((data: any) => {
     self.postMessage({
