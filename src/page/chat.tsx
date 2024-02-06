@@ -43,7 +43,7 @@ export const ChatPage = () => {
     },
     [messagesList]
   );
-  const onResult = (result: any) => {
+  const onResult = (_result: any) => {
     // console.log(result.data[0], resultRef.current);
     // resultRef.current = [
     //   ...resultRef.current,
