@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { ModelLoading } from "../component/model-loading";
 import {
   loadModel,
@@ -6,40 +6,66 @@ import {
   getStatus,
   generate,
   resultCallback,
+  updateCallback,
 } from "../worker-instance";
 import { Button, Col, Container, Input, Label, Row, Spinner } from "reactstrap";
 
 export const ChatPage = () => {
   const textareaRef = useRef(null);
   const resultRef = useRef<any>([]);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messagesList, setMessages] = useState<any[]>([]);
   const [progress, setProgress] = useState<number>(0);
   const [maxLength, setMaxLength] = useState<number>(150);
+  const [started, setStarted] = useState<boolean>(false);
+  const [lastQuestion, setLastQuestion] = useState<string>("");
   // const [generatedText, setGeneratedText] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  let started = false;
+
+  const onUpdate = useCallback(
+    (result: any) => {
+      const lastItem = messagesList[messagesList.length - 1];
+      if (lastItem.role !== "assistant") {
+        const newItem = {
+          role: "assistant",
+          content: result.data.replace(lastQuestion, ""),
+        };
+        setMessages([...messagesList, newItem]);
+      } else {
+        setMessages([
+          ...messagesList.slice(0, -1),
+          {
+            role: "assistant",
+            content: result.data.replace(lastQuestion, ""),
+          },
+        ]);
+      }
+    },
+    [messagesList]
+  );
+  const onResult = (result: any) => {
+    // console.log(result.data[0], resultRef.current);
+    // resultRef.current = [
+    //   ...resultRef.current,
+    //   {
+    //     role: "assistant",
+    //     content: result.data[0].generated_text,
+    //   },
+    // ];
+    setIsGenerating(false);
+  };
+
+  resultCallback(onResult);
+  updateCallback(onUpdate);
 
   useEffect(() => {
     if (started) return;
-    started = true;
-    console.log("here");
-    const onResult = (result: any) => {
-      console.log(result.data[0], resultRef.current);
-      resultRef.current = [
-        ...resultRef.current,
-        {
-          role: "assistant",
-          content: result.data[0].generated_text,
-        },
-      ];
-      setIsGenerating(false);
-    };
+    setStarted(true);
 
     const data = {
       type: "chat",
     };
-    resultCallback(onResult);
+
     loadModel(data);
     const timer = setInterval(() => {
       const status = getStatus();
@@ -51,7 +77,7 @@ export const ChatPage = () => {
         setProgress(newProgress);
       }
     }, 10);
-  }, []);
+  }, [messagesList]);
 
   function getMaxTokens() {
     // 1 token = 4 characters
@@ -69,17 +95,18 @@ export const ChatPage = () => {
       },
     ];
     setMessages([
-      ...messages,
+      ...messagesList,
       {
         role: "user",
         content: text,
       },
     ]);
+    setLastQuestion(`Question:${text}\nAnswer:`);
     generate("chat", {
-      text,
+      text: `Question:${text}\nAnswer:`,
       generation: {
         max_new_tokens: getMaxTokens(),
-        temperature: 0.7,
+        temperature: 0.3,
         do_sample: true,
         top_k: 50,
       },
@@ -96,7 +123,7 @@ export const ChatPage = () => {
         <Row>
           <Col>
             <div className="result-container chat-container ">
-              {resultRef.current.map((item: any, index: number) => {
+              {messagesList.map((item: any, index: number) => {
                 return (
                   <div
                     key={index}

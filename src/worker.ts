@@ -61,6 +61,7 @@ self.addEventListener("message", async (event) => {
         self.postMessage({ type: "result", data: result });
         break;
       case "update":
+        // self.postMessage({ type: "update", data: result });
         break;
     }
   } catch (e) {
